@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from silk.auth import login_possibly_required, permissions_possibly_required
-from silk.models import Request, SQLQuery, Profile
+from silk.models import RequestSkill, SQLQuery, Profile
 from silk.utils.pagination import _page
 
 __author__ = 'mtford'
@@ -19,7 +19,7 @@ class SQLView(View):
             'request': request,
         }
         if request_id:
-            silk_request = Request.objects.get(id=request_id)
+            silk_request = RequestSkill.objects.get(id=request_id)
             query_set = SQLQuery.objects.filter(request=silk_request).order_by('-start_time')
             for q in query_set:
                 q.start_time_relative = q.start_time - silk_request.start_time

@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from gprof2dot import DotWriter, PstatsParser, Theme
 # silk
 from silk.auth import login_possibly_required, permissions_possibly_required
-from silk.models import Request
+from silk.models import RequestSkill
 
 
 COLOR_MAP = Theme(
@@ -67,7 +67,7 @@ class ProfileDotView(View):
     @method_decorator(login_possibly_required)
     @method_decorator(permissions_possibly_required)
     def get(self, request, request_id):
-        silk_request = get_object_or_404(Request, pk=request_id, prof_file__isnull=False)
+        silk_request = get_object_or_404(RequestSkill, pk=request_id, prof_file__isnull=False)
         cutoff = float(request.GET.get('cutoff', '') or 5)
         profile = _create_profile(silk_request.prof_file)
         result = dict(dot=_create_dot(profile, cutoff))

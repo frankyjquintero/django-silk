@@ -13,41 +13,41 @@ class SummaryView(View):
     filters_key = 'summary_filters'
 
     def _avg_num_queries(self, filters):
-        queries__aggregate = models.Request.objects.filter(*filters).annotate(num_queries=Count('queries')).aggregate(num=Avg('num_queries'))
+        queries__aggregate = models.RequestSkill.objects.filter(*filters).annotate(num_queries=Count('queries')).aggregate(num=Avg('num_queries'))
         return queries__aggregate['num']
 
     def _avg_time_spent_on_queries(self, filters):
-        taken__aggregate = models.Request.objects.filter(*filters).annotate(time_spent=Sum('queries__time_taken')).aggregate(num=Avg('time_spent'))
+        taken__aggregate = models.RequestSkill.objects.filter(*filters).annotate(time_spent=Sum('queries__time_taken')).aggregate(num=Avg('time_spent'))
         return taken__aggregate['num']
 
     def _avg_overall_time(self, filters):
-        taken__aggregate = models.Request.objects.filter(*filters).annotate(time_spent=Sum('time_taken')).aggregate(num=Avg('time_spent'))
+        taken__aggregate = models.RequestSkill.objects.filter(*filters).annotate(time_spent=Sum('time_taken')).aggregate(num=Avg('time_spent'))
         return taken__aggregate['num']
 
     # TODO: Find a more efficient way to do this. Currently has to go to DB num. views + 1 times and is prob quite expensive
     def _longest_query_by_view(self, filters):
-        values_list = models.Request.objects.filter(*filters).values_list("view_name").annotate(max=Max('time_taken')).order_by('-max')[:5]
+        values_list = models.RequestSkill.objects.filter(*filters).values_list("view_name").annotate(max=Max('time_taken')).order_by('-max')[:5]
         requests = []
         for view_name, _ in values_list:
-            request = models.Request.objects.filter(view_name=view_name, *filters).order_by('-time_taken')[0]
+            request = models.RequestSkill.objects.filter(view_name=view_name, *filters).order_by('-time_taken')[0]
             requests.append(request)
         return requests
 
     def _time_spent_in_db_by_view(self, filters):
-        values_list = models.Request.objects.filter(*filters).values_list('view_name').annotate(t=Sum('queries__time_taken')).filter(t__gte=0).order_by('-t')[:5]
+        values_list = models.RequestSkill.objects.filter(*filters).values_list('view_name').annotate(t=Sum('queries__time_taken')).filter(t__gte=0).order_by('-t')[:5]
         requests = []
         for view, _ in values_list:
-            r = models.Request.objects.filter(view_name=view, *filters).annotate(t=Sum('queries__time_taken')).order_by('-t')[0]
+            r = models.RequestSkill.objects.filter(view_name=view, *filters).annotate(t=Sum('queries__time_taken')).order_by('-t')[0]
             requests.append(r)
         return requests
 
     def _num_queries_by_view(self, filters):
-        queryset = models.Request.objects.filter(*filters).values_list('view_name').annotate(t=Count('queries')).order_by('-t')[:5]
+        queryset = models.RequestSkill.objects.filter(*filters).values_list('view_name').annotate(t=Count('queries')).order_by('-t')[:5]
         views = [r[0] for r in queryset[:6]]
         requests = []
         for view in views:
             try:
-                r = models.Request.objects.filter(view_name=view, *filters).annotate(t=Count('queries')).order_by('-t')[0]
+                r = models.RequestSkill.objects.filter(view_name=view, *filters).annotate(t=Count('queries')).order_by('-t')[0]
                 requests.append(r)
             except IndexError:
                 pass
@@ -59,7 +59,7 @@ class SummaryView(View):
         avg_overall_time = self._avg_num_queries(filters)
         c = {
             'request': request,
-            'num_requests': models.Request.objects.filter(*filters).count(),
+            'num_requests': models.RequestSkill.objects.filter(*filters).count(),
             'num_profiles': models.Profile.objects.filter(*filters).count(),
             'avg_num_queries': avg_overall_time,
             'avg_time_spent_on_queries': self._avg_time_spent_on_queries(filters),

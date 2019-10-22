@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.test import TestCase
 from mock import Mock
 from silk.model_factory import RequestModelFactory, ResponseModelFactory
-from silk.models import Request
+from silk.models import RequestSkill
 from silk.collector import DataCollector
 from silk.config import SilkyConfig
 
@@ -34,7 +34,7 @@ class TestMaxBodySizeRequest(TestCase):
 class TestMaxBodySizeResponse(TestCase):
 
     def setUp(self):
-        DataCollector().request = Request.objects.create()
+        DataCollector().request = RequestSkill.objects.create()
 
     def test_no_max_response(self):
         SilkyConfig().SILKY_MAX_RESPONSE_BODY_SIZE = -1

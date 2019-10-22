@@ -40,4 +40,4 @@ class Command(BaseCommand):
         Command.delete_model(silk.models.Profile)
         Command.delete_model(silk.models.SQLQuery)
         Command.delete_model(silk.models.Response)
-        Command.delete_model(silk.models.Request)
+        Command.delete_model(silk.models.RequestSkill)

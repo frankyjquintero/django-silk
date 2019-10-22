@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import View
 from silk.auth import login_possibly_required, permissions_possibly_required
 
-from silk.models import Profile, Request
+from silk.models import Profile, RequestSkill
 from silk.request_filters import BaseFilter, filters_from_request
 
 
@@ -81,7 +81,7 @@ class ProfilingView(View):
     def _create_context(self, request, *args, **kwargs):
         request_id = kwargs.get('request_id')
         if request_id:
-            silk_request = Request.objects.get(pk=request_id)
+            silk_request = RequestSkill.objects.get(pk=request_id)
         else:
             silk_request = None
         show = request.GET.get('show', self.default_show)

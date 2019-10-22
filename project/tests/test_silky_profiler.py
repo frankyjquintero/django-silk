@@ -3,7 +3,7 @@ from time import sleep
 from django.test import TestCase
 from silk.collector import DataCollector
 
-from silk.models import Request, _time_taken
+from silk.models import RequestSkill, _time_taken
 from silk.profiling.profiler import silk_profile
 from .test_lib.mock_suite import MockSuite
 
@@ -27,14 +27,14 @@ class TestProfilerRequests(TestCase):
         self.assertFalse(profile['request'])
 
     def test_context_manager_request(self):
-        DataCollector().configure(Request.objects.create(path='/to/somewhere'))
+        DataCollector().configure(RequestSkill.objects.create(path='/to/somewhere'))
         with silk_profile(name='test_profile'):
             sleep(0.1)
         profile = list(DataCollector().profiles.values())[0]
         self.assertEqual(DataCollector().request, profile['request'])
 
     def test_decorator_request(self):
-        DataCollector().configure(Request.objects.create(path='/to/somewhere'))
+        DataCollector().configure(RequestSkill.objects.create(path='/to/somewhere'))
 
         @silk_profile()
         def func():
@@ -49,7 +49,7 @@ class TestProfilertContextManager(TestCase):
     @classmethod
     def setUpClass(cls):
         super(TestProfilertContextManager, cls).setUpClass()
-        r = Request.objects.create()
+        r = RequestSkill.objects.create()
         DataCollector().configure(r)
         with silk_profile(name='test_profile'):
             sleep(0.1)
@@ -72,7 +72,7 @@ class TestProfilerDecorator(TestCase):
     @classmethod
     def setUpClass(cls):
         super(TestProfilerDecorator, cls).setUpClass()
-        DataCollector().configure(Request.objects.create())
+        DataCollector().configure(RequestSkill.objects.create())
 
         @silk_profile()
         def func():
@@ -96,7 +96,7 @@ class TestProfilerDecorator(TestCase):
 
 class TestQueries(TestCase):
     def test_no_queries_before(self):
-        DataCollector().configure(Request.objects.create())
+        DataCollector().configure(RequestSkill.objects.create())
         with silk_profile(name='test_no_queries_before_profile'):
             mock_queries = MockSuite().mock_sql_queries(n=5, as_dict=True)
             DataCollector().register_query(*mock_queries)
@@ -109,7 +109,7 @@ class TestQueries(TestCase):
 
     def test_queries_before(self):
         """test that any queries registered before profiling begins are ignored"""
-        DataCollector().configure(Request.objects.create())
+        DataCollector().configure(RequestSkill.objects.create())
         DataCollector().register_query(*MockSuite().mock_sql_queries(n=2, as_dict=True))
         before = [x for x in DataCollector().queries]
         with silk_profile(name='test_no_queries_before_profile'):

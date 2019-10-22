@@ -141,15 +141,15 @@ class MockSuite(object):
         request_body = random.choice(self.request_content[request_content_type])
         time_taken = end_time - start_time
         time_taken = time_taken.total_seconds()
-        request = models.Request.objects.create(method=self._random_method(),
-                                                path=self._random_path(),
-                                                num_sql_queries=num_sql_queries,
-                                                start_time=start_time,
-                                                end_time=end_time,
-                                                view_name=random.choice(self.view_names),
-                                                time_taken=time_taken,
-                                                encoded_headers=json.dumps({'content-type': request_content_type}),
-                                                body=request_body)
+        request = models.RequestSkill.objects.create(method=self._random_method(),
+                                                     path=self._random_path(),
+                                                     num_sql_queries=num_sql_queries,
+                                                     start_time=start_time,
+                                                     end_time=end_time,
+                                                     view_name=random.choice(self.view_names),
+                                                     time_taken=time_taken,
+                                                     encoded_headers=json.dumps({'content-type': request_content_type}),
+                                                     body=request_body)
         response_content_type = random.choice(self.response_content_types)
         response_body = random.choice(self.response_content[response_content_type])
         models.Response.objects.create(request=request,

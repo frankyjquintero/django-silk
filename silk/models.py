@@ -52,7 +52,7 @@ class CaseInsensitiveDictionary(dict):
             self[k] = v
 
 
-class Request(models.Model):
+class RequestSkill(models.Model):
     id = CharField(max_length=36, default=uuid4, primary_key=True)
     path = CharField(max_length=190, db_index=True)
     query_params = TextField(blank=True, default='')
@@ -182,14 +182,14 @@ class Request(models.Model):
         if self.view_name and len(self.view_name) > 190:
             self.view_name = self._shorten(self.view_name)
 
-        super(Request, self).save(*args, **kwargs)
-        Request.garbage_collect(force=False)
+        super(RequestSkill, self).save(*args, **kwargs)
+        RequestSkill.garbage_collect(force=False)
 
 
 class Response(models.Model):
     id = CharField(max_length=36, default=uuid4, primary_key=True)
     request = OneToOneField(
-        Request, related_name='response', db_index=True,
+        RequestSkill, related_name='response', db_index=True,
         on_delete=models.CASCADE,
     )
     status_code = IntegerField()
@@ -226,7 +226,7 @@ class SQLQueryManager(models.Manager):
 
         with transaction.atomic():
             request_counter = Counter([x.request_id for x in objs])
-            requests = Request.objects.filter(pk__in=request_counter.keys())
+            requests = RequestSkill.objects.filter(pk__in=request_counter.keys())
             # TODO: Not that there is ever more than one request (but there could be eventually)
             # but perhaps there is a cleaner way of apply the increment from the counter without iterating
             # and saving individually? e.g. bulk update but with diff. increments. Couldn't come up with this
@@ -243,7 +243,7 @@ class SQLQuery(models.Model):
     end_time = DateTimeField(null=True, blank=True)
     time_taken = FloatField(blank=True, null=True)
     request = ForeignKey(
-        Request, related_name='queries', null=True,
+        RequestSkill, related_name='queries', null=True,
         blank=True, db_index=True, on_delete=models.CASCADE,
     )
     traceback = TextField()
@@ -315,7 +315,7 @@ class BaseProfile(models.Model):
     start_time = DateTimeField(default=timezone.now)
     end_time = DateTimeField(null=True, blank=True)
     request = ForeignKey(
-        Request, null=True, blank=True, db_index=True,
+        RequestSkill, null=True, blank=True, db_index=True,
         on_delete=models.CASCADE,
     )
     time_taken = FloatField(blank=True, null=True)

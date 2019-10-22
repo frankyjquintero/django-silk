@@ -223,7 +223,7 @@ class RequestModelFactory(object):
         path = self.request.path
         view_name = self.view_name()
 
-        request_model = models.Request.objects.create(
+        request_model = models.RequestSkill.objects.create(
             path=path,
             encoded_headers=self.encoded_headers(),
             method=self.request.method,

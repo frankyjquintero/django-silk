@@ -125,68 +125,68 @@ class RequestTest(TestCase):
 
     def test_garbage_collect(self):
 
-        self.assertTrue(models.Request.objects.filter(id=self.obj.id).exists())
+        self.assertTrue(models.RequestSkill.objects.filter(id=self.obj.id).exists())
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = 100
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS = 0
-        models.Request.garbage_collect()
-        self.assertFalse(models.Request.objects.filter(id=self.obj.id).exists())
+        models.RequestSkill.garbage_collect()
+        self.assertFalse(models.RequestSkill.objects.filter(id=self.obj.id).exists())
 
     def test_probabilistic_garbage_collect(self):
 
-        self.assertTrue(models.Request.objects.filter(id=self.obj.id).exists())
+        self.assertTrue(models.RequestSkill.objects.filter(id=self.obj.id).exists())
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = 0
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS = 0
-        models.Request.garbage_collect()
-        self.assertTrue(models.Request.objects.filter(id=self.obj.id).exists())
+        models.RequestSkill.garbage_collect()
+        self.assertTrue(models.RequestSkill.objects.filter(id=self.obj.id).exists())
 
     def test_force_garbage_collect(self):
 
-        self.assertTrue(models.Request.objects.filter(id=self.obj.id).exists())
+        self.assertTrue(models.RequestSkill.objects.filter(id=self.obj.id).exists())
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = 0
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS = 0
-        models.Request.garbage_collect(force=True)
-        self.assertFalse(models.Request.objects.filter(id=self.obj.id).exists())
+        models.RequestSkill.garbage_collect(force=True)
+        self.assertFalse(models.RequestSkill.objects.filter(id=self.obj.id).exists())
 
     def test_greedy_garbage_collect(self):
 
         for x in range(3):
-            obj = models.Request(path='/', method='get')
+            obj = models.RequestSkill(path='/', method='get')
             obj.save()
-        self.assertEqual(models.Request.objects.count(), 4)
+        self.assertEqual(models.RequestSkill.objects.count(), 4)
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = 50
         SilkyConfig().SILKY_MAX_RECORDED_REQUESTS = 3
-        models.Request.garbage_collect(force=True)
-        self.assertEqual(models.Request.objects.count(), 1)
+        models.RequestSkill.garbage_collect(force=True)
+        self.assertEqual(models.RequestSkill.objects.count(), 1)
 
     def test_save_if_have_no_raw_body(self):
 
-        obj = models.Request(path='/some/path/', method='get')
+        obj = models.RequestSkill(path='/some/path/', method='get')
         self.assertEqual(obj.raw_body, '')
         obj.save()
         self.assertEqual(obj.raw_body, '')
 
     def test_save_if_have_raw_body(self):
 
-        obj = models.Request(path='/some/path/', method='get', raw_body='some text')
+        obj = models.RequestSkill(path='/some/path/', method='get', raw_body='some text')
         obj.save()
         self.assertEqual(obj.raw_body, u'some text')
 
     def test_save_if_have_no_body(self):
 
-        obj = models.Request(path='/some/path/', method='get')
+        obj = models.RequestSkill(path='/some/path/', method='get')
         self.assertEqual(obj.body, '')
         obj.save()
         self.assertEqual(obj.body, '')
 
     def test_save_if_have_body(self):
 
-        obj = models.Request(path='/some/path/', method='get', body='some text')
+        obj = models.RequestSkill(path='/some/path/', method='get', body='some text')
         obj.save()
         self.assertEqual(obj.body, u'some text')
 
     def test_save_if_have_no_end_time(self):
 
-        obj = models.Request(path='/some/path/', method='get')
+        obj = models.RequestSkill(path='/some/path/', method='get')
         self.assertEqual(obj.time_taken, None)
         obj.save()
         self.assertEqual(obj.time_taken, None)
@@ -195,13 +195,13 @@ class RequestTest(TestCase):
     def test_save_if_have_end_time(self):
 
         date = datetime.datetime(2016, 1, 1, 12, 0, 3, tzinfo=pytz.UTC)
-        obj = models.Request(path='/some/path/', method='get', end_time=date)
+        obj = models.RequestSkill(path='/some/path/', method='get', end_time=date)
         obj.save()
         self.assertEqual(obj.end_time, date)
         self.assertEqual(obj.time_taken, 3000.0)
 
     def test_prof_file_default_storage(self):
-        obj = models.Request(path='/some/path/', method='get')
+        obj = models.RequestSkill(path='/some/path/', method='get')
         self.assertEqual(obj.prof_file.storage.__class__, ProfilerResultStorage)
 
 

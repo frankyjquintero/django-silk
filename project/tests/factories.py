@@ -2,7 +2,7 @@
 import factory
 import factory.fuzzy
 
-from silk.models import Request, Response, SQLQuery
+from silk.models import RequestSkill, Response, SQLQuery
 
 
 HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS']
@@ -24,7 +24,7 @@ class RequestMinFactory(factory.django.DjangoModelFactory):
     method = factory.fuzzy.FuzzyChoice(HTTP_METHODS)
 
     class Meta:
-        model = Request
+        model = RequestSkill
 
 
 class ResponseFactory(factory.django.DjangoModelFactory):

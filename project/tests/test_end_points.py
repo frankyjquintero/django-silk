@@ -36,7 +36,7 @@ class TestEndPoints(TestCase):
         self.assertTrue(response.status_code == 200)
 
     def test_request_detail(self):
-        request_query_data = random.choice(models.Request.objects.values('id'))
+        request_query_data = random.choice(models.RequestSkill.objects.values('id'))
         request_id = request_query_data['id']
         response = self.client.get(silky_reverse('request_detail', kwargs={
             'request_id': request_id
@@ -65,7 +65,7 @@ class TestEndPoints(TestCase):
 
     def test_raw(self):
         request_query_data = random.choice(
-            models.Request.objects
+            models.RequestSkill.objects
             .values('id')
             .filter(body__isnull=False)
         )

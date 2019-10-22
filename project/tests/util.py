@@ -1,12 +1,12 @@
 from mock import Mock
-from silk.models import Request
+from silk.models import RequestSkill
 
 
 def mock_data_collector():
     mock = Mock()
     mock.queries = []
     mock.local = Mock()
-    r = Request()
+    r = RequestSkill()
     mock.local.request = r
     mock.request = r
     return mock

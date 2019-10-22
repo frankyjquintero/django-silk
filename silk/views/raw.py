@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from silk.auth import login_possibly_required, permissions_possibly_required
-from silk.models import Request
+from silk.models import RequestSkill
 import logging
 Logger = logging.getLogger('silk.views.raw')
 
@@ -17,7 +17,7 @@ class Raw(View):
         subtyp = request.GET.get('subtyp', None)
         body = None
         if typ and subtyp:
-            silk_request = Request.objects.get(pk=request_id)
+            silk_request = RequestSkill.objects.get(pk=request_id)
             if typ == 'request':
                 body = silk_request.raw_body if subtyp == 'raw' else silk_request.body
             elif typ == 'response':

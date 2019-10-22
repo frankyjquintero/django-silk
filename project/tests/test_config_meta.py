@@ -6,7 +6,7 @@ from silk.middleware import SilkyMiddleware
 
 from .util import delete_all_models
 from silk.config import SilkyConfig
-from silk.models import Request
+from silk.models import RequestSkill
 
 def fake_get_response():
     def fake_response():
@@ -25,12 +25,12 @@ class TestConfigMeta(TestCase):
         return response
 
     def _execute_request(self):
-        delete_all_models(Request)
-        DataCollector().configure(Request.objects.create())
+        delete_all_models(RequestSkill)
+        DataCollector().configure(RequestSkill.objects.create())
         response = self._mock_response()
         SilkyMiddleware(fake_get_response)._process_response('', response)
         self.assertTrue(response.status_code == 200)
-        objs = Request.objects.all()
+        objs = RequestSkill.objects.all()
         self.assertEqual(objs.count(), 1)
         r = objs[0]
         return r

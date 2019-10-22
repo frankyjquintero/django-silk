@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import View
 
 from silk.auth import login_possibly_required, permissions_possibly_required
-from silk.models import Request, Response
+from silk.models import RequestSkill, Response
 from silk.request_filters import BaseFilter, filters_from_request
 
 __author__ = 'mtford'
@@ -60,7 +60,7 @@ class RequestsView(View):
         return [{'value': x, 'label': self.order_dir[x]['label']} for x in self.order_dir.keys()]
 
     def _get_paths(self):
-        return Request.objects.values_list(
+        return RequestSkill.objects.values_list(
             'path',
             flat=True
         ).order_by(
@@ -68,7 +68,7 @@ class RequestsView(View):
         ).distinct()
 
     def _get_views(self):
-        return Request.objects.values_list(
+        return RequestSkill.objects.values_list(
             'view_name',
             flat=True
         ).exclude(
@@ -86,7 +86,7 @@ class RequestsView(View):
         ).distinct()
 
     def _get_methods(self):
-        return Request.objects.values_list(
+        return RequestSkill.objects.values_list(
             'method',
             flat=True
         ).order_by(
@@ -98,7 +98,7 @@ class RequestsView(View):
             filters = []
         if not show:
             show = self.default_show
-        query_set = Request.objects.all()
+        query_set = RequestSkill.objects.all()
         if not order_by:
             order_by = self.default_order_by
         if not order_dir:

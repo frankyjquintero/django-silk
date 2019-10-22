@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django.views.generic import View
 
 from silk.auth import login_possibly_required, permissions_possibly_required
-from silk.models import SQLQuery, Request, Profile
+from silk.models import SQLQuery, RequestSkill, Profile
 from silk.views.code import _code
 
 
@@ -56,7 +56,7 @@ class SQLDetailView(View):
             'file_path': file_path
         }
         if request_id:
-            context['silk_request'] = Request.objects.get(pk=request_id)
+            context['silk_request'] = RequestSkill.objects.get(pk=request_id)
         if profile_id:
             context['profile'] = Profile.objects.get(pk=int(profile_id))
         if pos and file_path and line_num:

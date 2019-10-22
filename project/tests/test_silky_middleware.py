@@ -4,7 +4,7 @@ from mock import patch, Mock
 
 from silk.config import SilkyConfig
 from silk.middleware import SilkyMiddleware, _should_intercept
-from silk.models import Request
+from silk.models import RequestSkill
 
 from .util import mock_data_collector
 
@@ -101,14 +101,14 @@ class TestApplyDynamicMappings(TestCase):
 
 class TestShouldIntercept(TestCase):
     def test_should_intercept_non_silk_request(self):
-        request = Request()
+        request = RequestSkill()
         request.path = '/myapp/foo'
         should_intercept = _should_intercept(request)
 
         self.assertTrue(should_intercept)
 
     def test_should_intercept_silk_request(self):
-        request = Request()
+        request = RequestSkill()
         request.path = reverse('silk:summary')
         should_intercept = _should_intercept(request)
 
@@ -118,7 +118,7 @@ class TestShouldIntercept(TestCase):
         SilkyConfig().SILKY_IGNORE_PATHS = [
             '/ignorethis'
         ]
-        request = Request()
+        request = RequestSkill()
         request.path = '/ignorethis'
         should_intercept = _should_intercept(request)
 

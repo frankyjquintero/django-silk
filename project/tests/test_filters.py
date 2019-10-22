@@ -44,7 +44,7 @@ class TestRequestFilters(TestCase):
             r.start_time = timezone.now() - timedelta(seconds=n)
             r.save()
             n += 1
-        requests = models.Request.objects.filter(SecondsFilter(5))
+        requests = models.RequestSkill.objects.filter(SecondsFilter(5))
         for r in requests:
             dt = r.start_time
             seconds = self._time_stamp(timezone.now()) - self._time_stamp(dt)
@@ -54,7 +54,7 @@ class TestRequestFilters(TestCase):
         requests = [mock_suite.mock_request() for _ in range(0, 10)]
         r = random.choice(requests)
         view_name = r.view_name
-        requests = models.Request.objects.filter(ViewNameFilter(view_name))
+        requests = models.RequestSkill.objects.filter(ViewNameFilter(view_name))
         for r in requests:
             self.assertTrue(r.view_name == view_name)
 
@@ -62,7 +62,7 @@ class TestRequestFilters(TestCase):
         requests = [mock_suite.mock_request() for _ in range(0, 10)]
         r = random.choice(requests)
         path = r.path
-        requests = models.Request.objects.filter(PathFilter(path))
+        requests = models.RequestSkill.objects.filter(PathFilter(path))
         for r in requests:
             self.assertTrue(r.path == path)
 
@@ -71,7 +71,7 @@ class TestRequestFilters(TestCase):
         counts = sorted([x.queries.count() for x in requests])
         c = counts[int(floor(len(counts) / 2))]
         num_queries_filter = NumQueriesFilter(c)
-        query_set = models.Request.objects.all()
+        query_set = models.RequestSkill.objects.all()
         query_set = num_queries_filter.contribute_to_query_set(query_set)
         filtered = query_set.filter(num_queries_filter)
         for f in filtered:
@@ -82,7 +82,7 @@ class TestRequestFilters(TestCase):
         time_taken = sorted(sum(q.time_taken for q in x.queries.all()) for x in requests)
         c = time_taken[int(floor(len(time_taken) / 2))]
         time_taken_filter = TimeSpentOnQueriesFilter(c)
-        query_set = models.Request.objects.all()
+        query_set = models.RequestSkill.objects.all()
         query_set = time_taken_filter.contribute_to_query_set(query_set)
         filtered = query_set.filter(time_taken_filter)
         for f in filtered:
@@ -93,7 +93,7 @@ class TestRequestFilters(TestCase):
         time_taken = sorted(x.time_taken for x in requests)
         c = time_taken[int(floor(len(time_taken) / 2))]
         time_taken_filter = OverallTimeFilter(c)
-        query_set = models.Request.objects.all()
+        query_set = models.RequestSkill.objects.all()
         query_set = time_taken_filter.contribute_to_query_set(query_set)
         filtered = query_set.filter(time_taken_filter)
         for f in filtered:
@@ -105,7 +105,7 @@ class TestRequestFilters(TestCase):
         by_status_code = groupby(requests, key=lambda x: x.response.status_code)
         for status_code, expected in by_status_code:
             status_code_filter = StatusCodeFilter(status_code)
-            query_set = models.Request.objects.all()
+            query_set = models.RequestSkill.objects.all()
             query_set = status_code_filter.contribute_to_query_set(query_set)
             filtered = query_set.filter(status_code_filter)
             self.assertEqual(len(list(expected)), filtered.count())
@@ -116,14 +116,14 @@ class TestRequestFilters(TestCase):
         by_method = groupby(requests, key=lambda x: x.method)
         for method, expected in by_method:
             method_filter = MethodFilter(method)
-            query_set = models.Request.objects.all()
+            query_set = models.RequestSkill.objects.all()
             query_set = method_filter.contribute_to_query_set(query_set)
             filtered = query_set.filter(method_filter)
             self.assertEqual(len(list(expected)), filtered.count())
 
 class TestRequestAfterDateFilter(TestCase):
     def assertFilter(self, dt, f):
-        requests = models.Request.objects.filter(f)
+        requests = models.RequestSkill.objects.filter(f)
         for r in requests:
             self.assertTrue(r.start_time > dt)
 
@@ -152,7 +152,7 @@ class TestRequestAfterDateFilter(TestCase):
 
 class TestRequestBeforeDateFilter(TestCase):
     def assertFilter(self, dt, f):
-        requests = models.Request.objects.filter(f)
+        requests = models.RequestSkill.objects.filter(f)
         for r in requests:
             self.assertTrue(r.start_time < dt)
 

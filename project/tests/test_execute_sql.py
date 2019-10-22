@@ -2,7 +2,7 @@ from django.test import TestCase
 from mock import Mock, NonCallableMock, NonCallableMagicMock, patch
 
 from silk.collector import DataCollector
-from silk.models import SQLQuery, Request
+from silk.models import SQLQuery, RequestSkill
 from silk.sql import execute_sql
 from .util import delete_all_models
 
@@ -46,7 +46,7 @@ class TestCallRequest(TestCase):
     @classmethod
     def setUpClass(cls):
         super(TestCallRequest, cls).setUpClass()
-        call_execute_sql(cls, Request())
+        call_execute_sql(cls, RequestSkill())
 
     def test_called(self):
         self.mock_sql._execute_sql.assert_called_once_with(*self.args, **self.kwargs)
@@ -80,14 +80,14 @@ class TestCollectorInteraction(TestCase):
         return query
 
     def test_request(self):
-        DataCollector().configure(request=Request.objects.create(path='/path/to/somewhere'))
+        DataCollector().configure(request=RequestSkill.objects.create(path='/path/to/somewhere'))
         sql, _ = mock_sql()
         execute_sql(sql)
         query = self._query()
         self.assertEqual(query['request'], DataCollector().request)
 
     def test_registration(self):
-        DataCollector().configure(request=Request.objects.create(path='/path/to/somewhere'))
+        DataCollector().configure(request=RequestSkill.objects.create(path='/path/to/somewhere'))
         sql, _ = mock_sql()
         execute_sql(sql)
         query = self._query()
